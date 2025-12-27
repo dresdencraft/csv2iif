@@ -68,29 +68,11 @@ jobs:
           --base master \
           --head release-v$NEXT_VERSION
     
-    - name: Auto-merge and create release
+    - name: Enable auto-merge
       if: steps.version.outputs.next_version != ''
       env:
         GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
       run: |
         NEXT_VERSION="${{ steps.version.outputs.next_version }}"
         PR_NUMBER=$(gh pr list --head release-v$NEXT_VERSION --json number --jq '.[0].number')
-        
-        # Auto-approve and merge
         gh pr merge $PR_NUMBER --auto --squash --delete-branch
-        
-        # Wait for merge
-        sleep 10
-        
-        # Create tag and release
-        git checkout master
-        git pull
-        git tag v$NEXT_VERSION
-        git push origin v$NEXT_VERSION
-        
-        # Build and upload to release
-        pip install build
-        python -m build
-        gh release create v$NEXT_VERSION dist/* \
-          --title "v$NEXT_VERSION" \
-          --notes-file RELEASE_NOTES.md
