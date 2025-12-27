@@ -55,7 +55,7 @@ jobs:
         sed -i 's/__version__ = ".*"/__version__ = "'$NEXT_VERSION'"/' src/csv2iif/__init__.py
         
         # Generate changelog
-        semantic-release changelog --unreleased > RELEASE_NOTES.md
+        semantic-release changelog > RELEASE_NOTES.md
         
         git add pyproject.toml src/csv2iif/__init__.py RELEASE_NOTES.md
         git commit -m "chore(release): $NEXT_VERSION"
