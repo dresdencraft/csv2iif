@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## v1.0.0 (2025-01-XX)
+## v1.0.0 (2025-12-27)
 
 ### Features
 - Initial release of csv2iif tool
