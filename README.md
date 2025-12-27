@@ -18,13 +18,13 @@ A Python CLI tool that converts CSV files to IIF (Intuit Interchange Format) for
 ### Preferred Method: pipx from GitHub
 
 ```bash
-pipx install git+https://github.com/dresdencraft/csv2iif.git@v1.1.0
+pipx install git+https://github.com/dresdencraft/csv2iif.git@v1.2.0
 ```
 
 ### Alternative: pip from GitHub
 
 ```bash
-pip install git+https://github.com/dresdencraft/csv2iif.git@v1.1.0
+pip install git+https://github.com/dresdencraft/csv2iif.git@v1.2.0
 ```
 
 ### Latest Development Version
@@ -135,6 +135,16 @@ CLI arguments override environment variables.
 - `3` - Conversion error (unexpected error during conversion)
 
 ## Development
+
+### Release Workflow
+
+This project uses automated semantic versioning. See [RELEASE.md](RELEASE.md) for details.
+
+**Quick summary:**
+- Use conventional commits (`feat:`, `fix:`, etc.)
+- Merge to `master` triggers release PR creation
+- Approve and merge release PR
+- Tag and GitHub release created automatically
 
 ### Install Development Dependencies
 
