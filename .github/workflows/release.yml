@@ -18,7 +18,7 @@ jobs:
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.RELEASE_TOKEN }}
     
     - name: Set up Python 3.12
       uses: actions/setup-python@v5
@@ -33,7 +33,7 @@ jobs:
     - name: Determine next version
       id: version
       env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
       run: |
         git config user.name github-actions
         git config user.email github-actions@github.com
@@ -45,7 +45,7 @@ jobs:
     - name: Create release PR
       if: steps.version.outputs.next_version != ''
       env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
       run: |
         NEXT_VERSION="${{ steps.version.outputs.next_version }}"
         git checkout -b release-v$NEXT_VERSION
@@ -71,7 +71,7 @@ jobs:
     - name: Auto-merge and create release
       if: steps.version.outputs.next_version != ''
       env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
       run: |
         NEXT_VERSION="${{ steps.version.outputs.next_version }}"
         PR_NUMBER=$(gh pr list --head release-v$NEXT_VERSION --json number --jq '.[0].number')
