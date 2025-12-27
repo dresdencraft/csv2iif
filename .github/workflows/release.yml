@@ -57,14 +57,22 @@ jobs:
         # Generate changelog
         semantic-release changelog > RELEASE_NOTES.md
         
-        git add pyproject.toml src/csv2iif/__init__.py RELEASE_NOTES.md
+        git add pyproject.toml src/csv2iif/__init__.py RELEASE_NOTES.md || git add pyproject.toml src/csv2iif/__init__.py
         git commit -m "chore(release): $NEXT_VERSION"
         git push origin release-v$NEXT_VERSION
         
         # Create PR
-        gh pr create \
-          --title "chore(release): $NEXT_VERSION" \
-          --body-file RELEASE_NOTES.md \
-          --base master \
-          --head release-v$NEXT_VERSION
+        if [ -f RELEASE_NOTES.md ]; then
+          gh pr create \
+            --title "chore(release): $NEXT_VERSION" \
+            --body-file RELEASE_NOTES.md \
+            --base master \
+            --head release-v$NEXT_VERSION
+        else
+          gh pr create \
+            --title "chore(release): $NEXT_VERSION" \
+            --body "Release v$NEXT_VERSION" \
+            --base master \
+            --head release-v$NEXT_VERSION
+        fi
 
