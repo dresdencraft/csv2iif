@@ -67,12 +67,4 @@ jobs:
           --body-file RELEASE_NOTES.md \
           --base master \
           --head release-v$NEXT_VERSION
-    
-    - name: Enable auto-merge
-      if: steps.version.outputs.next_version != ''
-      env:
-        GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
-      run: |
-        NEXT_VERSION="${{ steps.version.outputs.next_version }}"
-        PR_NUMBER=$(gh pr list --head release-v$NEXT_VERSION --json number --jq '.[0].number')
-        gh pr merge $PR_NUMBER --auto --squash --delete-branch
+
