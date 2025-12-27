@@ -1,0 +1,25 @@
+name: Auto Update PR
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  auto-update:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Update all open PRs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr list --state open --json number --jq '.[].number' | while read pr; do
+            echo "Updating PR #$pr"
+            gh pr comment $pr --body "Auto-updating branch with latest master" || true
+            gh api repos/${{ github.repository }}/pulls/$pr/update-branch -X PUT || true
+          done
