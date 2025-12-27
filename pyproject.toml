@@ -9,7 +9,7 @@ description = "Convert CSV files to IIF format for QuickBooks 2010"
 readme = "README.md"
 requires-python = ">=3.12"
 authors = [
-    {name = "csv2iif", email = "csv2iif@example.com"}
+    {name = "DresdenCraft"}
 ]
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -62,3 +62,27 @@ python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
 addopts = "--cov=src/csv2iif --cov-report=term-missing --cov-report=html"
+
+
+[tool.semantic_release]
+version_toml = ["pyproject.toml:project.version"]
+version_variables = ["src/csv2iif/__init__.py:__version__"]
+branch = "master"
+upload_to_vcs_release = true
+build_command = "pip install build && python -m build"
+major_on_zero = true
+tag_format = "v{version}"
+
+[tool.semantic_release.commit_parser_options]
+allowed_tags = ["feat", "fix", "docs", "style", "refactor", "perf", "test", "build", "ci", "chore"]
+minor_tags = ["feat"]
+patch_tags = ["fix", "perf"]
+
+[tool.semantic_release.changelog]
+template_dir = "templates"
+changelog_file = "CHANGELOG.md"
+exclude_commit_patterns = []
+
+[tool.semantic_release.branches.master]
+match = "master"
+prerelease = false
