@@ -1,0 +1,11 @@
+# Default owners for everything in the repo
+* @dresdencraft/maintainers
+
+# Python source code
+/src/ @dresdencraft/maintainers
+
+# Tests
+/tests/ @dresdencraft/maintainers
+
+# CI/CD
+/.github/ @dresdencraft/maintainers
