@@ -37,6 +37,14 @@ jobs:
       run: |
         git config user.name github-actions
         git config user.email github-actions@github.com
+        
+        # Check if there are releasable changes
+        if semantic-release version --print 2>&1 | grep -q "No release will be made"; then
+          echo "next_version=" >> $GITHUB_OUTPUT
+          echo "No release needed"
+          exit 0
+        fi
+        
         semantic-release version --print > version.txt
         NEXT_VERSION=$(cat version.txt)
         echo "next_version=$NEXT_VERSION" >> $GITHUB_OUTPUT
