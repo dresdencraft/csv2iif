@@ -51,7 +51,7 @@ jobs:
         git checkout -b release-v$NEXT_VERSION
         
         # Update version files
-        sed -i 's/version = ".*"/version = "'$NEXT_VERSION'"/' pyproject.toml
+        sed -i '/^version = /s/version = ".*"/version = "'$NEXT_VERSION'"/' pyproject.toml
         sed -i 's/__version__ = ".*"/__version__ = "'$NEXT_VERSION'"/' src/csv2iif/__init__.py
         
         # Generate changelog
