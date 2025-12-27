@@ -19,7 +19,6 @@ jobs:
       with:
         fetch-depth: 0
         token: ${{ secrets.GITHUB_TOKEN }}
-        persist-credentials: true
     
     - name: Set up Python 3.12
       uses: actions/setup-python@v5
@@ -31,10 +30,67 @@ jobs:
         python -m pip install --upgrade pip
         pip install python-semantic-release
     
-    - name: Python Semantic Release
+    - name: Determine next version
+      id: version
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         git config user.name github-actions
         git config user.email github-actions@github.com
-        semantic-release version
+        semantic-release version --print > version.txt
+        NEXT_VERSION=$(cat version.txt)
+        echo "next_version=$NEXT_VERSION" >> $GITHUB_OUTPUT
+        echo "Next version: $NEXT_VERSION"
+    
+    - name: Create release PR
+      if: steps.version.outputs.next_version != ''
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        NEXT_VERSION="${{ steps.version.outputs.next_version }}"
+        git checkout -b release-v$NEXT_VERSION
+        
+        # Update version files
+        sed -i 's/version = ".*"/version = "'$NEXT_VERSION'"/' pyproject.toml
+        sed -i 's/__version__ = ".*"/__version__ = "'$NEXT_VERSION'"/' src/csv2iif/__init__.py
+        
+        # Generate changelog
+        semantic-release changelog --unreleased > RELEASE_NOTES.md
+        
+        git add pyproject.toml src/csv2iif/__init__.py RELEASE_NOTES.md
+        git commit -m "chore(release): $NEXT_VERSION"
+        git push origin release-v$NEXT_VERSION
+        
+        # Create PR
+        gh pr create \
+          --title "chore(release): $NEXT_VERSION" \
+          --body-file RELEASE_NOTES.md \
+          --base master \
+          --head release-v$NEXT_VERSION
+    
+    - name: Auto-merge and create release
+      if: steps.version.outputs.next_version != ''
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        NEXT_VERSION="${{ steps.version.outputs.next_version }}"
+        PR_NUMBER=$(gh pr list --head release-v$NEXT_VERSION --json number --jq '.[0].number')
+        
+        # Auto-approve and merge
+        gh pr merge $PR_NUMBER --auto --squash --delete-branch
+        
+        # Wait for merge
+        sleep 10
+        
+        # Create tag and release
+        git checkout master
+        git pull
+        git tag v$NEXT_VERSION
+        git push origin v$NEXT_VERSION
+        
+        # Build and upload to release
+        pip install build
+        python -m build
+        gh release create v$NEXT_VERSION dist/* \
+          --title "v$NEXT_VERSION" \
+          --notes-file RELEASE_NOTES.md
