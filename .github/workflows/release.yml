@@ -62,11 +62,12 @@ jobs:
         # Update version files
         sed -i '/^version = /s/version = ".*"/version = "'$NEXT_VERSION'"/' pyproject.toml
         sed -i 's/__version__ = ".*"/__version__ = "'$NEXT_VERSION'"/' src/csv2iif/__init__.py
+        sed -i 's/@v[0-9]\+\.[0-9]\+\.[0-9]\+/@v'$NEXT_VERSION'/g' README.md
         
         # Generate changelog
         semantic-release changelog > RELEASE_NOTES.md
         
-        git add pyproject.toml src/csv2iif/__init__.py RELEASE_NOTES.md || git add pyproject.toml src/csv2iif/__init__.py
+        git add pyproject.toml src/csv2iif/__init__.py README.md RELEASE_NOTES.md || git add pyproject.toml src/csv2iif/__init__.py README.md
         git commit -m "chore(release): $NEXT_VERSION"
         git push origin release-v$NEXT_VERSION
         
