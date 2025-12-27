@@ -18,13 +18,13 @@ A Python CLI tool that converts CSV files to IIF (Intuit Interchange Format) for
 ### Preferred Method: pipx from GitHub
 
 ```bash
-pipx install git+https://github.com/dresdencraft/csv2iif.git@v1.5.0
+pipx install git+https://github.com/dresdencraft/csv2iif.git@v1.6.0
 ```
 
 ### Alternative: pip from GitHub
 
 ```bash
-pip install git+https://github.com/dresdencraft/csv2iif.git@v1.5.0
+pip install git+https://github.com/dresdencraft/csv2iif.git@v1.6.0
 ```
 
 ### Latest Development Version
